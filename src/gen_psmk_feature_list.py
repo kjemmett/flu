@@ -36,7 +36,6 @@ def generate_feature_list(seqrecords, K):
     L = len(seqrecords[0].seq)
 
     for i in range(0, L-K):
-        print '%s / %s' % (str(i+1), str(L-K+1))
         featlist = list(set([str(seqrecord.seq[i:i + K]) for seqrecord in seqrecords]))
         features.extend(['_'.join([str(i + 1), feature, str(i + 1 + K)])\
                 for feature in featlist])
@@ -54,7 +53,7 @@ def main():
         type=str, help="input sequence file")
     parser.add_argument("-K", "--kmerlength", dest="K",
         type=int, help="kmer length")
-    parser.add_argument("-O", "--output", dest="output_path",
+    parser.add_argument("-O", "--output", dest="output_file",
         type=str, help="output path")
     args = parser.parse_args()
 
@@ -65,9 +64,7 @@ def main():
     feature_list = generate_feature_list(seqrecords, args.K)
 
     # save
-    output_file = os.path.join(args.output_path, '%s.K%02s.features.csv' \
-            % (args.job_name, args.K))
-    f = open(output_file, 'w')
+    f = open(args.output_file, 'w')
     for feature in feature_list:
         f.write('%s\n' % feature)
 

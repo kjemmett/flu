@@ -84,7 +84,7 @@ def main():
     parser.add_argument("-SR", "--seqrange", nargs=2, dest="seqrange",
         type=int, help="range of sequences (default=all)")
     parser.add_argument("-FR", "--featurerange", nargs=2, dest="featurerange",
-        type=int, help="range of eatures (default=all)")
+        type=int, help="range of features (default=all)")
     args = parser.parse_args()
 
     # load sequences
