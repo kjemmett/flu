@@ -1,3 +1,4 @@
+import os
 import pdb
 from argparse import ArgumentParser
 from Bio import SeqIO
@@ -31,11 +32,14 @@ def main():
     parser.add_argument("-FF", "--featurefile", dest="feature_file",
         type=str, help="feature file")
     parser.add_argument("-NC", "--numchunks", dest="num_chunks",
-            type=int, help="number of chunks")
+        type=int, help="number of chunks")
     parser.add_argument("-CP", "--chunkprefix", dest="chunk_prefix",
         type=str, help="input chunk prefix")
     parser.add_argument("-OF", "--output", dest="output_file",
         type=str, help="output file")
+    parser.add_argument("-DC", "--delete_chunks", dest="delete_chunks",
+        type=int, help="delete chunks? (0 = no, 1 = yes (default)",
+        default=1)
     args = parser.parse_args()
 
     # load sequences
@@ -51,9 +55,11 @@ def main():
     
     # load chunks and place in appropriate spot
     for i in range(1, args.num_chunks+1):
-        print i
-        chunk = pd.load('%s.%d.pkl' % (args.chunk_prefix, i)) 
+        chunk_file = '%s.%d.pkl' % (args.chunk_prefix, i)
+        chunk = pd.load(chunk_file) 
         X.ix[chunk.index, chunk.columns] = chunk.as_matrix()
+        if args.delete_chunks:
+            os.remove(chunk_file)
 
     # save
     pd.save(X, args.output_file)
