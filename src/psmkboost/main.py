@@ -137,7 +137,6 @@ def main():
         C_code = '\n'.join([line for line in f if '//' not in line])
         f.close()
 
-        pdb.set_trace()
         # run Adaboost
         print 'entering adaboost'
         adt, adt_outputs, performance, predicted_labels = boost.adaboost(C_code, \

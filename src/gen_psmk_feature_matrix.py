@@ -1,6 +1,6 @@
-import cPickle
-import numpy as np
-import pandas as pd
+import os
+os.environ[ 'MPLCONFIGDIR' ] = '/ifs/scratch/c2b2/cw_lab/kje2109/.matplotlib'
+from pandas import DataFrame
 from Bio import SeqIO
 from argparse import ArgumentParser
 
@@ -50,7 +50,7 @@ def generate_feature_matrix(seqrecords, K, M, features):
     # initialize feature matrix
     print 'initializing feature matrix'
     seqids = [seq.id for seq in seqrecords]
-    X = pd.DataFrame(index=seqids, columns=features, dtype='bool')
+    X = DataFrame(index=seqids, columns=features, dtype='bool')
 
     print 'computing mismatches'
     for idx, feature in enumerate(features):
@@ -60,7 +60,7 @@ def generate_feature_matrix(seqrecords, K, M, features):
         # compute mismatches
         mval = [calc_mismatch(kmer, str(seq.seq[i:i + K])) for \
                 seq in seqrecords]
-        X[feature] = np.array(map(lambda x: x <= M, mval))
+        X[feature] = map(lambda x: x <= M, mval)
 
     return X
 
@@ -111,7 +111,7 @@ def main():
     X = generate_feature_matrix(seqrecords, args.K, args.M, features)
 
     # save data
-    cPickle.Pickler(open(args.output_file, 'w'), protocol=2).dump(X)
+    X.save(args.output_file)
 
 
 if __name__=="__main__":

@@ -1,3 +1,4 @@
+import pdb
 from argparse import ArgumentParser
 from Bio import SeqIO
 import pandas as pd
@@ -43,15 +44,16 @@ def main():
 
     # load features
     ff = open(args.feature_file, 'r').readlines()
-    features = [fi.strip() for fi in ff]
+    ff = [fi.strip() for fi in ff]
 
     # initialize dataframe
     X = pd.DataFrame(columns=ff, index=seqids, dtype='bool')
     
     # load chunks and place in appropriate spot
     for i in range(1, args.num_chunks+1):
+        print i
         chunk = pd.load('%s.%d.pkl' % (args.chunk_prefix, i)) 
-        X.ix[[chunk.index], [chunk.columns]] = chunk
+        X.ix[chunk.index, chunk.columns] = chunk.as_matrix()
 
     # save
     pd.save(X, args.output_file)
